@@ -10,10 +10,12 @@ import router from './router'
 Vue.config.productionTip = false
 Vue.use(ElementUI)
 
+const serverRoot = 'http://127.0.0.1:5000';
+
 /* eslint-disable no-new */
 new Vue({
-    el: '#app',
-    router,
-    components: { App },
-    template: '<App/>'
+  el: '#app',
+  router,
+  components: { App },
+  template: '<App/>'
 })

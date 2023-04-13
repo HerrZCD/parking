@@ -9,12 +9,12 @@
     <div class="input-wrapper">
       <el-input v-model="password" placeholder="please input password" style="width: 255px" @keyup.enter="login"></el-input>
     </div>
-    <div class="input-wrapper">
+    <!-- <div class="input-wrapper">
       <el-select v-model="logInRole" placeholder="Please select a role" style="width: 255px">
         <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
         </el-option>
       </el-select>
-    </div>
+    </div> -->
     <el-button type="primary" @click="login()" class="login-btn">Enter system</el-button>
   </div>
   <a class="register" @click="register()">Do not have an account? register now</a>
@@ -28,18 +28,18 @@ export default {
     return {
       userName: '',
       password: '',
-      logInRole: '',
-      options: [{
-        value: 'Owner',
-        label: 'Carport Owner'
-      }, {
-        value: 'Admin',
-        label: 'Administrator'
-      },
-      {
-        value: 'User',
-        label: 'User'
-      }],
+      // logInRole: '',
+      // options: [{
+      //   value: 'Owner',
+      //   label: 'Carport Owner'
+      // }, {
+      //   value: 'Admin',
+      //   label: 'Administrator'
+      // },
+      // {
+      //   value: 'User',
+      //   label: 'User'
+      // }],
     }
   },
 
@@ -60,37 +60,40 @@ export default {
         alert('Please input valid password');
         return
       }
-
-      if (!this.logInRole) {
-        alert('Please select a role');
-        return
-      }
       const params = {
         name: this.userName,
         password: this.password,
-        logInRole: this.logInRole,
+        // loginRole: this.logInRole,
       }
-      fetch("http://192.168.199.239:3000/api/data", {
+      fetch("http://127.0.0.1:5000/login", {
           method: 'POST', // or 'PUT'
-          body: `name=${this.userName}`, //'{"name":"hehe","age":10}'
+          body: JSON.stringify(params),
           headers: new Headers({
-            'Content-Type': 'application/x-www-form-urlencoded'
+            'Content-Type': 'application/json;charset=utf-8',
+            'user-agent': 'Mozillia/4.0 MDN Example'
           })
         })
         .then(res => res.json())
         .then(data => {
-          if (data.flag === 1) {
+          if (data.status === "success") {
             this.$message({
               type: 'info',
-              message: '用户名已经被占用'
+              message: 'success'
             });
-          } else if (data.flag === 0) {
-            this.$router.push({
-              path: 'chat',
-              query: {
-                name: this.userName
-              }
-            })
+            if (data.role === "User") {
+              // Go to user page.
+            } else if (data.role === 'Owner') {
+              // Go to Owner page.
+            } else if (data.role === 'Admin') {
+              // Go to Admin page.
+            } else {
+              // do nothing
+            }
+          } else {
+            this.$message({
+              type: 'info',
+              message: 'fail to login'
+            });
           }
         })
         .catch(function (e) {
@@ -132,8 +135,8 @@ h3 {
 }
 
 .box {
-  width: 500px;
-  height: 400px;
+  width: 450px;
+  height: 300px;
   border-radius: 4px;
   border: 1px #ebebeb solid;
   box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
