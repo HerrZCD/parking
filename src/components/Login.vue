@@ -20,7 +20,6 @@
   <a class="register" @click="register()">Do not have an account? register now</a>
 </div>
 </template>
-
 <script>
 export default {
   name: 'login',
@@ -80,10 +79,15 @@ export default {
               type: 'info',
               message: 'success'
             });
+            this.$store.dispatch('loginActions', {
+              username: this.userName,
+              role: data.role
+            })
             if (data.role === "User") {
               // Go to user page.
             } else if (data.role === 'Owner') {
               // Go to Owner page.
+              this.$router.push('/manage');
             } else if (data.role === 'Admin') {
               // Go to Admin page.
             } else {

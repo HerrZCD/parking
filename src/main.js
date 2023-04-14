@@ -6,16 +6,43 @@ import App from './App'
 import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
 import router from './router'
+import Vuex from 'vuex'
+import { cp } from 'shelljs'
+
+
+Vue.use(Vuex)
+
+const store = new Vuex.Store({
+  state () {
+    return {
+      currentUser: '',
+      currentRole: '',
+    }
+  },
+  mutations: {
+    login (state, name, role) {
+      state.currentUser = name;
+      state.currentRole = role;
+    }
+  },
+  actions: {
+    loginActions({ commit }) {
+      commit('login');
+    }
+  }
+})
 
 Vue.config.productionTip = false
 Vue.use(ElementUI)
+Vue.use(store)
 
-const serverRoot = 'http://127.0.0.1:5000';
+
 
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
   router,
+  store,
   components: { App },
   template: '<App/>'
 })

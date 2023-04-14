@@ -3,6 +3,7 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import HelloWorld from '@/components/HelloWorld'
 import login from '@/components/Login'
+import manage from '@/components/Manage'
 import register from '@/components/Register'
 
 Vue.use(Router)
@@ -21,6 +22,13 @@ export default new Router({
       component: login,
       meta: {
         title: 'Login'
+      }
+    },
+    {
+      path: '/manage',
+      component: manage,
+      meta: {
+        title: 'manage'
       }
     },
     {
