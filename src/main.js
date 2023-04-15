@@ -17,6 +17,7 @@ const store = new Vuex.Store({
     return {
       currentUser: '',
       currentRole: '',
+      parkingSpots: [],
     }
   },
   mutations: {
@@ -27,6 +28,10 @@ const store = new Vuex.Store({
     changeRole(state, role) {
       console.log(role);
       state.currentRole = role;
+    },
+    initParkingSpots(state, spots) {
+      console.log(spots);
+      state.parkingSpots = spots;
     }
   },
   actions: {
@@ -37,6 +42,10 @@ const store = new Vuex.Store({
     roleActions({ commit }, role) {
       console.log(role);
       commit('changeRole', role);
+    },
+    initSpotsActions({ commit }, spots) {
+      console.log(spots);
+      commit('initParkingSpots', spots);
     }
   }
 })
