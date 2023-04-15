@@ -52,7 +52,29 @@ export default {
 
   methods: {
     submit() {
-      console.log(this.timeRange)
+      let fromTime;
+      let toTime;
+      if (Array.isArray(this.timeRange)) {
+        fromTime = this.timeRange[0].getTime();
+        toTime = this.timeRange[1].getTime();
+      }
+      const params = {
+        width: this.width,
+        height: this.height,
+        location: this.location,
+        price: this.price,
+        user_time_start: fromTime,
+        user_time_end: toTime,
+        owner: this.$store.state.currentUser,
+      }
+      fetch("http://127.0.0.1:5000/addspots", {
+        method: 'POST', // or 'PUT'
+        body: JSON.stringify(params),
+        headers: new Headers({
+          'Content-Type': 'application/json;charset=utf-8',
+          'user-agent': 'Mozillia/4.0 MDN Example'
+        })
+      })
     },
     cancel() {
     }

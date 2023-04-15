@@ -79,10 +79,10 @@ export default {
               type: 'info',
               message: 'success'
             });
-            this.$store.dispatch('loginActions', {
-              username: this.userName,
-              role: data.role
-            })
+            console.log(this.userName)
+            console.log(data.role)
+            this.$store.dispatch('roleActions', data.role);
+            this.$store.dispatch('nameActions', this.userName);
             if (data.role === "User") {
               // Go to user page.
             } else if (data.role === 'Owner') {

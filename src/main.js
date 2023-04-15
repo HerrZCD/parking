@@ -20,14 +20,23 @@ const store = new Vuex.Store({
     }
   },
   mutations: {
-    login (state, name, role) {
+    changeName(state, name) {
+      console.log(name);
       state.currentUser = name;
+    },
+    changeRole(state, role) {
+      console.log(role);
       state.currentRole = role;
     }
   },
   actions: {
-    loginActions({ commit }) {
-      commit('login');
+    nameActions({ commit }, username) {
+      console.log(username);
+      commit('changeName', username);
+    },
+    roleActions({ commit }, role) {
+      console.log(role);
+      commit('changeRole', role);
     }
   }
 })
