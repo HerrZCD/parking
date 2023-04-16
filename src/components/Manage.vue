@@ -1,7 +1,7 @@
 <template>
   <div class="wrapper">
-    <h2>Manage my parking spots</h2>
-    <el-button type="primary" @click="OpenAddDiag()" class="add-btn">Add a spot</el-button>
+    <h2>Manage <span v-if="role==='Owner'">my</span> parking spots</h2>
+    <el-button type="primary" @click="OpenAddDiag()" class="add-btn" v-if="role==='Owner'">Add a spot</el-button>
     <div class="box">
       <h3>Add Parking Port</h3>
       <div class="input-wrapper">
@@ -43,37 +43,37 @@
       style="width: 1120px">
       <el-table-column
         prop="id"
-        label="id"
+        label="Id"
         width="80">
       </el-table-column>
       <el-table-column
         prop="height"
-        label="height"
+        label="Height"
         width="80">
       </el-table-column>
       <el-table-column
         prop="width"
-        label="width"
+        label="Width"
         width="80">
       </el-table-column>
       <el-table-column
         prop="location"
-        label="location"
+        label="Location"
         width="180">
       </el-table-column>
       <el-table-column
         prop="owner"
-        label="owner"
+        label="Owner"
         width="80">
       </el-table-column>
       <el-table-column
         prop="price"
-        label="price"
+        label="Price (Per Hour)"
         width="80">
       </el-table-column>
       <el-table-column
         prop="user_time_start"
-        label="user_time_start"
+        label="Available time(From)"
         width="180">
         <template slot-scope="scope">
           <span>{{Date(scope.row.user_time_start)}}</span>
@@ -81,7 +81,7 @@
       </el-table-column>
       <el-table-column
         prop="user_time_end"
-        label="user_time_end"
+        label="Available time(To)"
         width="180">
         <template slot-scope="scope">
           <span>{{Date(scope.row.user_time_end)}}</span>
@@ -89,7 +89,7 @@
       </el-table-column>
       <el-table-column
         prop="user_time_end"
-        label="actions"
+        label="Actions"
         width="180">
         <template slot-scope="scope">
         <el-button
@@ -112,7 +112,10 @@ export default {
   computed: {
     parkingSpots() {
       return this.$store.state.parkingSpots;
-    }
+    },
+    role() {
+      return this.$store.state.currentRole;
+    },
   },
   data() {
     return {
@@ -139,8 +142,19 @@ export default {
       this.height = row.height;
       this.location = row.location;
       this.price = row.price;
+      console.log(row.user_time_start);
+      console.log(row.user_time_end);
 
-      this.timeRange = [new Date(row.user_time_start), new Date(row.user_time_end)]
+      let a = new Date(Number(row.user_time_start));
+      let b = new Date(Number(row.user_time_end));
+      console.log(a);
+      console.log(b);
+
+
+      this.timeRange = [a, b];
+      console.log(this.timeRange);
+      console.log(row.user_time_start);
+      console.log(row.user_time_end);
       document.getElementsByClassName('box')[0].style.display = "block";
     },
     handleDelete(index, row) {
@@ -158,10 +172,9 @@ export default {
           if (data.status === 'success') {
             this.$message({
               type: 'info',
-              message: 'delte success'
+              message: 'delete success'
             });
             this.GetParkingSpots();
-            document.getElementsByClassName('box')[0].style.display = "none";
           } else {
             this.$message({
               type: 'info',
@@ -171,9 +184,16 @@ export default {
         })
     },
     GetParkingSpots() {
-      const params = {
-        name: this.$store.state.currentUser
-      };
+      let params;
+      if (this.role === 'Admin') {
+        params = {
+          name: 'ALLUSERNAMES'
+        }
+      } else {
+        params = {
+          name: this.$store.state.currentUser
+        }
+      }
       fetch("http://127.0.0.1:5000/getSpots", {
         method: 'POST', // or 'PUT'
         body: JSON.stringify(params),
@@ -184,6 +204,8 @@ export default {
       }).then(res => res.json()).then(data => {
         if (data.status === 'success') {
           this.$store.dispatch('initSpotsActions', data.results);
+        } else {
+          this.$store.dispatch('initSpotsActions', []);
         }
       })
     },
@@ -258,22 +280,7 @@ export default {
    
   },
   mounted() {
-    const params = {
-      name: this.$store.state.currentUser
-    }
-    fetch("http://127.0.0.1:5000/getSpots", {
-      method: 'POST', // or 'PUT'
-      body: JSON.stringify(params),
-      headers: new Headers({
-        'Content-Type': 'application/json;charset=utf-8',
-        'user-agent': 'Mozillia/4.0 MDN Example'
-      })
-    }).then(res => res.json()).then(data => {
-      if (data.status === 'success') {
-        this.$store.dispatch('initSpotsActions', data.results);
-      }
-    })
-    console.log(`the component is now mounted.`);
+    this.GetParkingSpots();
   }
 }
 </script>

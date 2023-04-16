@@ -27,18 +27,6 @@ export default {
     return {
       userName: '',
       password: '',
-      // logInRole: '',
-      // options: [{
-      //   value: 'Owner',
-      //   label: 'Carport Owner'
-      // }, {
-      //   value: 'Admin',
-      //   label: 'Administrator'
-      // },
-      // {
-      //   value: 'User',
-      //   label: 'User'
-      // }],
     }
   },
 
@@ -89,7 +77,7 @@ export default {
               // Go to Owner page.
               this.$router.push('/manage');
             } else if (data.role === 'Admin') {
-              // Go to Admin page.
+              this.$router.push('/manage');
             } else {
               // do nothing
             }
