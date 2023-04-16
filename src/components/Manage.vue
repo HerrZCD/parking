@@ -1,7 +1,7 @@
 <template>
   <div class="wrapper">
     <h2>Manage my parking spots</h2>
-    <el-button type="primary" @click="OpenAddDiag()" class="login-btn">Add a spot</el-button>
+    <el-button type="primary" @click="OpenAddDiag()" class="add-btn">Add a spot</el-button>
     <div class="box">
       <h3>Add Parking Port</h3>
       <div class="input-wrapper">
@@ -31,28 +31,30 @@
         <el-input v-model="price" placeholder="Please input user name" style="width: 255px" type="number"></el-input>
       </div>
       <div class="buttons">
-        <el-button type="primary" @click="submit()" class="login-btn">Create a spot</el-button>
+        <el-button type="primary" @click="submit()" class="login-btn">Confirm</el-button>
         <el-button @click="cancel()">Cancel</el-button>
       </div>
     </div>
      <el-table
       class="spotsTable"
       :data="parkingSpots"
-      style="width: 80%">
+      border
+      stripe
+      style="width: 1120px">
       <el-table-column
         prop="id"
         label="id"
-        width="180">
+        width="80">
       </el-table-column>
       <el-table-column
         prop="height"
         label="height"
-        width="180">
+        width="80">
       </el-table-column>
       <el-table-column
         prop="width"
         label="width"
-        width="180">
+        width="80">
       </el-table-column>
       <el-table-column
         prop="location"
@@ -62,22 +64,42 @@
       <el-table-column
         prop="owner"
         label="owner"
-        width="180">
+        width="80">
       </el-table-column>
       <el-table-column
         prop="price"
         label="price"
-        width="180">
+        width="80">
       </el-table-column>
       <el-table-column
         prop="user_time_start"
         label="user_time_start"
         width="180">
+        <template slot-scope="scope">
+          <span>{{Date(scope.row.user_time_start)}}</span>
+        </template>
       </el-table-column>
       <el-table-column
         prop="user_time_end"
         label="user_time_end"
         width="180">
+        <template slot-scope="scope">
+          <span>{{Date(scope.row.user_time_end)}}</span>
+        </template>
+      </el-table-column>
+      <el-table-column
+        prop="user_time_end"
+        label="actions"
+        width="180">
+        <template slot-scope="scope">
+        <el-button
+          size="mini"
+          @click="handleEdit(scope.$index, scope.row)">Edit</el-button>
+        <el-button
+          size="mini"
+          type="danger"
+          @click="handleDelete(scope.$index, scope.row)">Delete</el-button>
+      </template>
       </el-table-column>
 
     </el-table>
@@ -94,34 +116,59 @@ export default {
   },
   data() {
     return {
+      id: 0,
       width: 0,
       height: 0,
       location: '',
       timeRange: '',
       price: 0,
-      tableData: [{
-            date: '2016-05-02',
-            name: '王小虎',
-            address: '上海市普陀区金沙江路 1518 弄'
-          }, {
-            date: '2016-05-04',
-            name: '王小虎',
-            address: '上海市普陀区金沙江路 1517 弄'
-          }, {
-            date: '2016-05-01',
-            name: '王小虎',
-            address: '上海市普陀区金沙江路 1519 弄'
-          }, {
-            date: '2016-05-03',
-            name: '王小虎',
-            address: '上海市普陀区金沙江路 1516 弄'
-          }]
+      action: 'modify',
     }
   },
 
   methods: {
     OpenAddDiag() {
+      this.action = 'create',
       document.getElementsByClassName('box')[0].style.display = "block";
+    },
+    handleEdit(index, row) {
+      this.id = row.id;
+      this.action = 'modify',
+      this.id = row.id;
+      this.width = row.width;
+      this.height = row.height;
+      this.location = row.location;
+      this.price = row.price;
+
+      this.timeRange = [new Date(row.user_time_start), new Date(row.user_time_end)]
+      document.getElementsByClassName('box')[0].style.display = "block";
+    },
+    handleDelete(index, row) {
+      const params = {
+        id: row.id
+      };
+      fetch("http://127.0.0.1:5000/deletespots", {
+          method: 'POST', // or 'PUT'
+          body: JSON.stringify(params),
+          headers: new Headers({
+            'Content-Type': 'application/json;charset=utf-8',
+            'user-agent': 'Mozillia/4.0 MDN Example'
+          })
+        }).then(res => res.json()).then(data => {
+          if (data.status === 'success') {
+            this.$message({
+              type: 'info',
+              message: 'delte success'
+            });
+            this.GetParkingSpots();
+            document.getElementsByClassName('box')[0].style.display = "none";
+          } else {
+            this.$message({
+              type: 'info',
+              message: 'fail to deletespots'
+            });
+          }
+        })
     },
     GetParkingSpots() {
       const params = {
@@ -156,28 +203,54 @@ export default {
         user_time_end: toTime,
         owner: this.$store.state.currentUser,
       }
-      fetch("http://127.0.0.1:5000/addspots", {
-        method: 'POST', // or 'PUT'
-        body: JSON.stringify(params),
-        headers: new Headers({
-          'Content-Type': 'application/json;charset=utf-8',
-          'user-agent': 'Mozillia/4.0 MDN Example'
+      if (this.action === 'create') {
+        fetch("http://127.0.0.1:5000/addspots", {
+          method: 'POST', // or 'PUT'
+          body: JSON.stringify(params),
+          headers: new Headers({
+            'Content-Type': 'application/json;charset=utf-8',
+            'user-agent': 'Mozillia/4.0 MDN Example'
+          })
+        }).then(res => res.json()).then(data => {
+          if (data.status === 'success') {
+            this.$message({
+              type: 'info',
+              message: 'add success'
+            });
+            this.GetParkingSpots();
+            document.getElementsByClassName('box')[0].style.display = "none";
+          } else {
+            this.$message({
+              type: 'info',
+              message: 'fail to add'
+            });
+          }
         })
-      }).then(res => res.json()).then(data => {
-        if (data.status === 'success') {
-          this.$message({
-            type: 'info',
-            message: 'add success'
-          });
-          this.GetParkingSpots();
-          document.getElementsByClassName('box')[0].style.display = "none";
-        } else {
-          this.$message({
-            type: 'info',
-            message: 'fail to add'
-          });
-        }
-      })
+      } else if (this.action === 'modify') {
+        params.id = this.id;
+        fetch("http://127.0.0.1:5000/modifyspots", {
+          method: 'POST', // or 'PUT'
+          body: JSON.stringify(params),
+          headers: new Headers({
+            'Content-Type': 'application/json;charset=utf-8',
+            'user-agent': 'Mozillia/4.0 MDN Example'
+          })
+        }).then(res => res.json()).then(data => {
+          if (data.status === 'success') {
+            this.$message({
+              type: 'info',
+              message: 'modify success'
+            });
+            this.GetParkingSpots();
+            document.getElementsByClassName('box')[0].style.display = "none";
+          } else {
+            this.$message({
+              type: 'info',
+              message: 'fail to modify'
+            });
+          }
+        })
+      }
     },
     cancel() {
       document.getElementsByClassName('box')[0].style.display = "none";
@@ -240,10 +313,11 @@ export default {
 }
 
 .spotsTable {
-  margin-left: calc(50% - 720px);
+  margin-left: calc(50% - 560px);
 }
 
 .login-btn {
   margin-top: 20px;
 }
+
 </style>
