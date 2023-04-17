@@ -13,10 +13,6 @@
         <el-input v-model="height" placeholder="Please input user name" style="width: 255px" type="number"></el-input>
       </div>
       <div class="input-wrapper">
-        <span class="tag">location:</span>
-        <el-input v-model="location" placeholder="Please input user name" style="width: 255px"></el-input>
-      </div>
-      <div class="input-wrapper">
         <span class="tag">Available time:</span>
         <el-date-picker
           v-model="timeRange"
@@ -29,6 +25,13 @@
       <div class="input-wrapper">
         <span class="tag">Price(per h):</span>
         <el-input v-model="price" placeholder="Please input user name" style="width: 255px" type="number"></el-input>
+      </div>
+      <div class="input-wrapper">
+        <span class="tag">location:</span>
+        <el-input v-model="location" placeholder="Please input user name" style="width: 255px"></el-input>
+      </div>
+      <div class="input-wrapper">
+        <div id="map"></div>
       </div>
       <div class="buttons">
         <el-button type="primary" @click="submit()" class="login-btn">Confirm</el-button>
@@ -107,6 +110,11 @@
 </template>
 
 <script>
+import { Loader } from "@googlemaps/js-api-loader"
+const loader = new Loader({
+  apiKey: "AIzaSyAia-ZeqnIWGC1RRI2HTRzwrSTTaZj62Hc", //api的key
+  libraries: ["places"],
+})
 export default {
   name: 'manage',
   computed: {
@@ -126,15 +134,51 @@ export default {
       timeRange: '',
       price: 0,
       action: 'modify',
+      google: '',
+      map: '',
+      service: '',
+      infoWindow: '',
+      marker: ''
     }
   },
 
   methods: {
     OpenAddDiag() {
+      this.initMap();
       this.action = 'create',
       document.getElementsByClassName('box')[0].style.display = "block";
+      document.getElementsByClassName('spotsTable')[0].style.display = "none";
+    },
+    initMap() {
+      const mapOptions = {
+        center: { lat: 22.602, lng: 114.043 },
+        zoom: 6
+      }
+      loader
+        .load()
+        .then((google) => {
+          console.log("render maps");
+          console.log("render maps");
+          console.log("render maps");
+          this.google = google
+          this.map = new google.maps.Map(
+            document.getElementById("map"),
+            mapOptions
+          )
+          // service 地点查询类
+          this.service = new google.maps.places.PlacesService(this.map)
+          this.infoWindow = new google.maps.InfoWindow({ // 地图信息窗口
+            content: "",
+            // disableAutoPan: true,
+          })
+          this.marker = new google.maps.Marker() // 地图标记类
+          this.google.maps.event.addListener(this.map, 'click', this.clickMap) // 监听地图点击事件
+        }).catch((e) => {
+          console.log(e)
+        })
     },
     handleEdit(index, row) {
+      this.initMap();
       this.id = row.id;
       this.action = 'modify',
       this.id = row.id;
@@ -156,6 +200,7 @@ export default {
       console.log(row.user_time_start);
       console.log(row.user_time_end);
       document.getElementsByClassName('box')[0].style.display = "block";
+      document.getElementsByClassName('spotsTable')[0].style.display = "none";
     },
     handleDelete(index, row) {
       const params = {
@@ -241,6 +286,7 @@ export default {
             });
             this.GetParkingSpots();
             document.getElementsByClassName('box')[0].style.display = "none";
+            document.getElementsByClassName('spotsTable')[0].style.display = "block";
           } else {
             this.$message({
               type: 'info',
@@ -265,6 +311,7 @@ export default {
             });
             this.GetParkingSpots();
             document.getElementsByClassName('box')[0].style.display = "none";
+            document.getElementsByClassName('spotsTable')[0].style.display = "block";
           } else {
             this.$message({
               type: 'info',
@@ -276,6 +323,7 @@ export default {
     },
     cancel() {
       document.getElementsByClassName('box')[0].style.display = "none";
+      document.getElementsByClassName('spotsTable')[0].style.display = "block";
     }
    
   },
@@ -298,6 +346,12 @@ export default {
   display: flex;
 }
 
+#map {
+  width: 100%;
+  height: 250px;
+  border: 1px solid black;
+}
+
 .tag {
   margin: 0 20px 15px 20px;
   line-height: 40px;
@@ -306,16 +360,16 @@ export default {
 }
 
 .box {
-  width: 650px;
-  height: 500px;
+  width: 850px;
+  height: 700px;
   border-radius: 4px;
   border: 1px #ebebeb solid;
   box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
   margin: 0 auto;
   display: none;
-  // position: absolute;
-  // left: calc(50% - 325px);
-  // top: 200px;
+  position: absolute;
+  left: calc(50% - 425px);
+  top: 250px;
   z-index:100;
 }
 
