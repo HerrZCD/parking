@@ -1,7 +1,7 @@
 <template>
   <div class="wrapper">
     <h2>Manage <span v-if="role==='Owner'">my</span> parking spots</h2>
-    <el-button type="primary" @click="OpenAddDiag()" class="add-btn" v-if="role==='Owner'">Add a spot</el-button>
+    <el-button type="primary" @click="OpenAddDiag()" class="add-btn" v-if="role==='Owner'"> Add a spot</el-button>
     <div class="box">
       <h3>Add Parking Port</h3>
       <div class="input-wrapper">
@@ -158,8 +158,12 @@ export default {
       document.getElementsByClassName('spotsTable')[0].style.display = "none";
     },
     handleSelect(item) {
+      console.log(item);
+
       this.lat = item.position.lat;
       this.lng = item.position.lng;
+      console.log(this.lat);
+      console.log(this.lng);
     },
     querySearch(queryString, cb) {
       var request = {
@@ -177,8 +181,8 @@ export default {
               results_to_show.push({
                 value: results[i].name,
                 position: {
-                  lat: results[i].geometry.lat,
-                  lng: results[i].geometry.lat,
+                  lat: results[i].geometry.location.lat(),
+                  lng: results[i].geometry.location.lng()
                 }
               })
               // createMarker(results[i]);
@@ -321,6 +325,8 @@ export default {
         user_time_start: fromTime,
         user_time_end: toTime,
         owner: this.$store.state.currentUser,
+        lat: this.lat,
+        lng: this.lng
       }
       if (this.action === 'create') {
         fetch("http://127.0.0.1:5000/addspots", {
@@ -425,11 +431,12 @@ export default {
 }
 
 .spotsTable {
+  margin-top: 10px;
   margin-left: calc(50% - 560px);
 }
 
 .login-btn {
-  margin-top: 20px;
+  margin-top: 10px;
 }
 
 </style>
