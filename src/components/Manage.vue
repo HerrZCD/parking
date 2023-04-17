@@ -28,7 +28,13 @@
       </div>
       <div class="input-wrapper">
         <span class="tag">location:</span>
-        <el-input v-model="location" placeholder="Please input user name" style="width: 255px"></el-input>
+        <el-autocomplete
+          class="inline-input"
+          v-model="location"
+          :fetch-suggestions="querySearch"
+          placeholder="请输入内容"
+          @select="handleSelect"
+        ></el-autocomplete>
       </div>
       <div class="input-wrapper">
         <div id="map"></div>
@@ -127,6 +133,8 @@ export default {
   },
   data() {
     return {
+      lat: 0,
+      lng: 0,
       id: 0,
       width: 0,
       height: 0,
@@ -148,6 +156,37 @@ export default {
       this.action = 'create',
       document.getElementsByClassName('box')[0].style.display = "block";
       document.getElementsByClassName('spotsTable')[0].style.display = "none";
+    },
+    handleSelect(item) {
+      this.lat = item.position.lat;
+      this.lng = item.position.lng;
+    },
+    querySearch(queryString, cb) {
+      var request = {
+            query: queryString,
+            fields: ['name', 'geometry'],
+          };
+      this.service.findPlaceFromQuery(request, (results, status) => {
+              console.log(results)
+              console.log(status)
+          let results_to_show = [];
+          
+          if (status === google.maps.places.PlacesServiceStatus.OK) {
+            for (var i = 0; i < results.length; i++) {
+              console.log(results)
+              results_to_show.push({
+                value: results[i].name,
+                position: {
+                  lat: results[i].geometry.lat,
+                  lng: results[i].geometry.lat,
+                }
+              })
+              // createMarker(results[i]);
+            }
+            this.map.setCenter(results[0].geometry.location);
+            cb(results_to_show);
+          }
+        });
     },
     initMap() {
       const mapOptions = {
