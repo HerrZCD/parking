@@ -5,6 +5,7 @@ import HelloWorld from '@/components/HelloWorld'
 import login from '@/components/Login'
 import manage from '@/components/Manage'
 import register from '@/components/Register'
+import user from '@/components/User'
 
 Vue.use(Router)
 
@@ -37,6 +38,13 @@ export default new Router({
       meta: {
         title: 'Register'
       }
-    }
+    },
+    {
+      path: '/user',
+      component: user,
+      meta: {
+        title: 'User'
+      }
+    },
   ]
 })

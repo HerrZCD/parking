@@ -72,7 +72,7 @@ export default {
             this.$store.dispatch('roleActions', data.role);
             this.$store.dispatch('nameActions', this.userName);
             if (data.role === "User") {
-              // Go to user page.
+              this.$router.push('/user');
             } else if (data.role === 'Owner') {
               // Go to Owner page.
               this.$router.push('/manage');
