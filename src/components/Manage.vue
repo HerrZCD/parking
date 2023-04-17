@@ -152,27 +152,40 @@ export default {
     initMap() {
       const mapOptions = {
         center: { lat: 22.602, lng: 114.043 },
-        zoom: 6
+        zoom: 20
       }
       loader
         .load()
         .then((google) => {
-          console.log("render maps");
-          console.log("render maps");
-          console.log("render maps");
           this.google = google
           this.map = new google.maps.Map(
             document.getElementById("map"),
             mapOptions
           )
+          var request = {
+            query: '上海闵行区龙柏香榭苑',
+            fields: ['name', 'geometry'],
+          };
           // service 地点查询类
           this.service = new google.maps.places.PlacesService(this.map)
-          this.infoWindow = new google.maps.InfoWindow({ // 地图信息窗口
-            content: "",
-            // disableAutoPan: true,
-          })
-          this.marker = new google.maps.Marker() // 地图标记类
-          this.google.maps.event.addListener(this.map, 'click', this.clickMap) // 监听地图点击事件
+          this.service.findPlaceFromQuery(request, (results, status) => {
+                console.log(results)
+                console.log(status)
+            
+            if (status === google.maps.places.PlacesServiceStatus.OK) {
+              for (var i = 0; i < results.length; i++) {
+                console.log(results)
+                // createMarker(results[i]);
+              }
+              this.map.setCenter(results[0].geometry.location);
+            }
+          });
+          // this.infoWindow = new google.maps.InfoWindow({ // 地图信息窗口
+          //   content: "",
+          //   // disableAutoPan: true,
+          // })
+          // this.marker = new google.maps.Marker() // 地图标记类
+          // this.google.maps.event.addListener(this.map, 'click', this.clickMap) // 监听地图点击事件
         }).catch((e) => {
           console.log(e)
         })
@@ -349,7 +362,6 @@ export default {
 #map {
   width: 100%;
   height: 250px;
-  border: 1px solid black;
 }
 
 .tag {
