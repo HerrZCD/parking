@@ -9,6 +9,27 @@
           @select="handleSelect"
   ></el-autocomplete>
   <div id="map"></div>
+  <div id="book-box">
+    <h3>Book Parking Port</h3>
+    <div class="input-wrapper">
+      <span class="tag">Start time:</span>
+      <el-date-picker
+        v-model="start_time"
+        type="datetime"
+        placeholder="Select start time">
+      </el-date-picker>
+    </div>
+    <div class="input-wrapper">
+      <span class="tag">Duration:</span>
+      <el-input v-model="duration" placeholder="Please input time duration" style="width: 220px" type="number"></el-input>
+    </div>
+    <div class="input-wrapper">
+      <span class="tag">Price:</span>
+      <span class="tag">{{totalPrice}}</span>
+    </div>
+    <el-button type="primary" @click="Book()" class="login-btn">Book</el-button>
+    <el-button type="primary" @click="Cancel()" class="login-btn">Cancel</el-button>
+  </div>
   <el-table
       class="spotsTable"
       :data="parkingSpots"
@@ -92,6 +113,12 @@ export default {
       map: '',
       google: '',
       service: '',
+      id: '',
+      owner: '',
+      location: '',
+      price: '',
+      start_time: '',
+      duration: '',
     }
   },
   computed: {
@@ -101,6 +128,9 @@ export default {
     role() {
       return this.$store.state.currentRole;
     },
+    totalPrice() {
+      return this.duration * this.price;
+    }
   },
   mounted() {
     this.initMap();
@@ -108,6 +138,22 @@ export default {
   },
 
   methods: {
+    Book() {
+      document.getElementById('book-box').style.display = "none";
+    },
+    Cancel() {
+      document.getElementById('book-box').style.display = "none";
+      
+    },
+    handleBook(index, row) {
+      this.id = row.id;
+      this.owner = row.owner;
+      this.location = row.location;
+      this.price = row.price;
+
+
+      document.getElementById('book-box').style.display = "block";
+    },
     GetParkingSpots() {
       let params;
       if (this.role !== 'Owner') {
@@ -228,6 +274,27 @@ export default {
   border: 1px solid black;
   margin-left:10%;
   margin-top: 10px;
+}
+
+#book-box {
+  display: none;
+  width: 450px;
+  height: 300px;
+  border-radius: 4px;
+  border: 1px #ebebeb solid;
+  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+  margin: 0 auto;
+}
+
+.input-wrapper {
+  display: flex;
+}
+
+.tag {
+  margin: 0 20px 15px 20px;
+  line-height: 40px;
+  font-weight: bold;
+  width: 150px;
 }
 
 .spotsTable {
