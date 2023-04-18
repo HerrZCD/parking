@@ -3,7 +3,7 @@
   <h2>Where do you want to go...</h2>
   <el-autocomplete
           class="inline-input"
-          v-model="location"
+          v-model="search_location"
           :fetch-suggestions="querySearch"
           placeholder="请输入内容"
           @select="handleSelect"
@@ -107,7 +107,7 @@ export default {
   name: 'user',
   data() {
     return {
-      location: '',
+      search_location: '',
       lat: 0,
       lng: 0,
       map: '',
@@ -130,6 +130,9 @@ export default {
     },
     totalPrice() {
       return this.duration * this.price;
+    },
+    user() {
+      return this.$store.state.currentUser;
     }
   },
   mounted() {
@@ -140,6 +143,36 @@ export default {
   methods: {
     Book() {
       document.getElementById('book-box').style.display = "none";
+      const params = {
+        spot_id : this.id,
+        location: this.location,
+        owner: this.owner,
+        user: this.user,
+        price: this.totalPrice,
+        user_time_start: this.start_time.getTime(),
+        duration: this.duration
+      }
+
+      fetch("http://127.0.0.1:5000/createorder", {
+        method: 'POST', // or 'PUT'
+        body: JSON.stringify(params),
+        headers: new Headers({
+          'Content-Type': 'application/json;charset=utf-8',
+          'user-agent': 'Mozillia/4.0 MDN Example'
+        })
+      }).then(res => res.json()).then(data => {
+        if (data.status === 'success') {
+          this.$message({
+              type: 'info',
+              message: 'create order success'
+            });
+        } else {
+          this.$message({
+            type: 'info',
+            message: 'failed to create order'
+          });
+        }
+      })
     },
     Cancel() {
       document.getElementById('book-box').style.display = "none";
@@ -271,9 +304,9 @@ export default {
 #map {
   width: 80%;
   height: 400px;
-  border: 1px solid black;
   margin-left:10%;
   margin-top: 10px;
+  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
 }
 
 #book-box {
@@ -283,7 +316,7 @@ export default {
   border-radius: 4px;
   border: 1px #ebebeb solid;
   box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
-  margin: 0 auto;
+  margin: 10px auto;
 }
 
 .input-wrapper {
