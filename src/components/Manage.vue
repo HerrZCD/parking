@@ -162,6 +162,7 @@ export default {
 
       this.lat = item.position.lat;
       this.lng = item.position.lng;
+      this.position = item.value;
       console.log(this.lat);
       console.log(this.lng);
     },

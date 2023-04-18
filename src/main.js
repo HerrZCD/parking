@@ -18,6 +18,7 @@ const store = new Vuex.Store({
       currentUser: '',
       currentRole: '',
       parkingSpots: [],
+      orders: []
     }
   },
   mutations: {
@@ -32,7 +33,11 @@ const store = new Vuex.Store({
     initParkingSpots(state, spots) {
       console.log(spots);
       state.parkingSpots = spots;
-    }
+    },
+    initOrders(state, orders) {
+      console.log(orders);
+      state.orders = orders;
+    },
   },
   actions: {
     nameActions({ commit }, username) {
@@ -46,6 +51,10 @@ const store = new Vuex.Store({
     initSpotsActions({ commit }, spots) {
       console.log(spots);
       commit('initParkingSpots', spots);
+    },
+    initOrders({ commit }, orders) {
+      console.log(orders);
+      commit('initOrders', orders);
     }
   }
 })

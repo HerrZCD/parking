@@ -20,7 +20,7 @@ export default {
   },
   methods: {
     GotoMyOrder() {
-      this.$router.push('/orders?user=' + this.user + '&role=' + this.role);
+      this.$router.push('/orders');
     }
   }
 }
