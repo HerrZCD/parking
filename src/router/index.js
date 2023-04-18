@@ -6,6 +6,7 @@ import login from '@/components/Login'
 import manage from '@/components/Manage'
 import register from '@/components/Register'
 import user from '@/components/User'
+import orders from '@/components/Orders'
 
 Vue.use(Router)
 
@@ -44,6 +45,13 @@ export default new Router({
       component: user,
       meta: {
         title: 'User'
+      }
+    },
+    {
+      path: '/orders',
+      component: orders,
+      meta: {
+        title: 'orders'
       }
     },
   ]
