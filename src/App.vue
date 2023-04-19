@@ -2,6 +2,7 @@
   <div id="app">
     <div id="my-info-bar">
       <el-link type="primary" @click="GotoMyOrder()" v-if="(role==='User' || role === 'Owner') && $route.path !== '/orders'">My Orders</el-link>
+      <span v-if="(role==='User' || role === 'Owner')" class="balance">{{balance}}</span><span class="balance" v-if="(role==='User' || role === 'Owner')">balance:</span>
     </div>
     <router-view/>
   </div>
@@ -17,6 +18,9 @@ export default {
     user() {
       return this.$store.state.currentUser;
     },
+    balance() {
+      return this.$store.state.balance;
+    }
   },
   methods: {
     GotoMyOrder() {
@@ -41,5 +45,12 @@ export default {
   display: flex;
   flex-direction: row-reverse;
   padding-right: 10px;
+}
+
+.balance {
+  color: #409EFF;
+  line-height: 30px;
+  margin-right: 10px;
+  font-size: 14px;
 }
 </style>

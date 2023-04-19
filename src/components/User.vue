@@ -159,6 +159,26 @@ export default {
   },
 
   methods: {
+    getbalance() {
+       const params = {
+        name: this.user,
+      }
+      fetch("http://127.0.0.1:5000/getbalance", {
+          method: 'POST', // or 'PUT'
+          body: JSON.stringify(params),
+          headers: new Headers({
+            'Content-Type': 'application/json;charset=utf-8',
+            'user-agent': 'Mozillia/4.0 MDN Example'
+          })
+        })
+        .then(res => res.json())
+        .then(data => {
+          this.$store.dispatch('roleActions', data.role);
+        })
+        .catch(function (e) {
+          console.log('oops! error:', e.message)
+        })
+    },
     Book() {
       const params = {
         spot_id : this.id,
@@ -179,10 +199,28 @@ export default {
         })
       }).then(res => res.json()).then(data => {
         if (data.status === 'success') {
-          this.$message({
-              type: 'info',
-              message: 'create order success'
-            });
+            this.$message({
+                type: 'info',
+                message: 'create order success'
+              });
+          const payParams = {
+          user: this.user,
+          owner: this.owner,
+          money: this.totalPrice
+        }
+        fetch("http://127.0.0.1:5000/setBalance", {
+          method: 'POST', // or 'PUT'
+          body: JSON.stringify(payParams),
+          headers: new Headers({
+            'Content-Type': 'application/json;charset=utf-8',
+            'user-agent': 'Mozillia/4.0 MDN Example'
+          })
+        }).then(res => res.json()).then(data => {
+          if (data.status === 'success') {
+            this.getbalance();
+          } else {
+          }
+        })
         document.getElementById('book-box').style.display = "none";
         } else {
           this.$message({

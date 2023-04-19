@@ -18,6 +18,7 @@ const store = new Vuex.Store({
       currentUser: '',
       currentRole: '',
       parkingSpots: [],
+      balance: 0,
       orders: []
     }
   },
@@ -25,6 +26,10 @@ const store = new Vuex.Store({
     changeName(state, name) {
       console.log(name);
       state.currentUser = name;
+    },
+    changebalance(state, balance) {
+      console.log(balance);
+      state.balance = balance;
     },
     changeRole(state, role) {
       console.log(role);
@@ -55,6 +60,10 @@ const store = new Vuex.Store({
     initOrders({ commit }, orders) {
       console.log(orders);
       commit('initOrders', orders);
+    },
+    balanceActions({ commit }, balance) {
+      console.log(balance);
+      commit('changebalance', balance);
     }
   }
 })

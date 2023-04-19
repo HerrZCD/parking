@@ -31,6 +31,26 @@ export default {
   },
 
   methods: {
+    getbalance() {
+       const params = {
+        name: this.userName,
+      }
+      fetch("http://127.0.0.1:5000/getbalance", {
+          method: 'POST', // or 'PUT'
+          body: JSON.stringify(params),
+          headers: new Headers({
+            'Content-Type': 'application/json;charset=utf-8',
+            'user-agent': 'Mozillia/4.0 MDN Example'
+          })
+        })
+        .then(res => res.json())
+        .then(data => {
+
+        })
+        .catch(function (e) {
+          console.log('oops! error:', e.message)
+        })
+    },
     register() {
       this.$router.push('/register');
     },
@@ -70,6 +90,7 @@ export default {
             console.log(this.userName)
             console.log(data.role)
             this.$store.dispatch('roleActions', data.role);
+            this.$store.dispatch('balanceActions', data.balance);
             this.$store.dispatch('nameActions', this.userName);
             if (data.role === "User") {
               this.$router.push('/user');
