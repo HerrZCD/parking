@@ -32,7 +32,7 @@
           class="inline-input"
           v-model="location"
           :fetch-suggestions="querySearch"
-          placeholder="请输入内容"
+          placeholder="Please input"
           @select="handleSelect"
         ></el-autocomplete>
       </div>

@@ -5,7 +5,7 @@
           class="inline-input"
           v-model="search_location"
           :fetch-suggestions="querySearch"
-          placeholder="请输入内容"
+          placeholder="Please Input"
           @select="handleSelect"
   ></el-autocomplete>
   <div id="map"></div>
@@ -16,10 +16,10 @@
       <el-date-picker
         v-model="start_time"
         type="datetimerange"
-        range-separator="至"
-        start-placeholder="开始日期"
+        range-separator="To"
+        start-placeholder="Start time"
         :picker-options="pickerOptions"
-        end-placeholder="结束日期">
+        end-placeholder="End Time">
       </el-date-picker>
     </div>
     <div class="input-wrapper">
