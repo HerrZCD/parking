@@ -145,6 +145,12 @@ export default {
         console.log(this.start_time)
         return (this.start_time[1].getTime() - this.start_time[0].getTime()) / 1000 / 3600;
       }
+    },
+    start_order_time() {
+      if (Array.isArray(this.start_time) && this.start_time.length === 2) {
+        console.log(this.start_time)
+        return this.start_time[0].getTime();
+      }
     }
   },
   mounted() {
@@ -154,14 +160,13 @@ export default {
 
   methods: {
     Book() {
-      document.getElementById('book-box').style.display = "none";
       const params = {
         spot_id : this.id,
         location: this.location,
         owner: this.owner,
         user: this.user,
         price: this.totalPrice,
-        user_time_start: this.start_time.getTime(),
+        user_time_start: this.start_order_time,
         duration: this.duration
       }
 
@@ -178,6 +183,7 @@ export default {
               type: 'info',
               message: 'create order success'
             });
+        document.getElementById('book-box').style.display = "none";
         } else {
           this.$message({
             type: 'info',
