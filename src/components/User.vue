@@ -70,7 +70,7 @@
         label="Available time(From)"
         width="180">
         <template slot-scope="scope">
-          <span>{{Date(scope.row.user_time_start)}}</span>
+          <span>{{new Date(Number(scope.row.user_time_start))}}</span>
         </template>
       </el-table-column>
       <el-table-column
@@ -78,7 +78,7 @@
         label="Available time(To)"
         width="180">
         <template slot-scope="scope">
-          <span>{{Date(scope.row.user_time_end)}}</span>
+          <span>{{new Date(Number(scope.row.user_time_end))}}</span>
         </template>
       </el-table-column>
       <el-table-column

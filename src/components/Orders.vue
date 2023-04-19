@@ -38,7 +38,7 @@
         label="Available time(From)"
         width="180">
         <template slot-scope="scope">
-          <span>{{Date(scope.row.user_time_start)}}</span>
+          <span>{{new Date(scope.row.user_time_start)}}</span>
         </template>
       </el-table-column>
       <el-table-column
@@ -50,7 +50,7 @@
         prop="user_time_end"
         label="Actions"
         width="180">
-        <template slot-scope="scope">
+        <template slot-scope="scope" v-if="scope.row.state==='unconfirm'">
         <el-button size="mini" @click="Confirm(scope.$index, scope.row)" class="login-btn">Confirm</el-button>
         <el-button
           size="mini"
@@ -86,7 +86,48 @@ export default {
   },
   methods: {
     Confirm(index, row) {
-
+      if (Date.now() > Number(row.user_time_start)) {
+        let state = '';
+        if (Date.now() > Number(row.user_time_start) + 1800 * 1000) {
+          // 过期
+          state = 'stale';
+        } else {
+          state = 'confirmed';
+        }
+        const params = {
+          id: row.id,
+          state
+        }
+        fetch("http://127.0.0.1:5000/changeorderstate", {
+          method: 'POST', // or 'PUT'
+          body: JSON.stringify(params),
+          headers: new Headers({
+            'Content-Type': 'application/json;charset=utf-8',
+            'user-agent': 'Mozillia/4.0 MDN Example'
+          })
+        })
+        .then(res => res.json())
+        .then(data => {
+          if (data.status === "success") {
+            if (state === 'stale') {
+              this.$message({
+                type: 'info',
+                message: 'This order is expired'
+              });
+            } else if (state === 'confirmed') {
+              this.$message({
+                type: 'info',
+                message: 'success to confirm'
+              });
+            }
+            this.GetOrders();
+          } else {
+          }
+        })
+        .catch(function (e) {
+          console.log('oops! error:', e.message)
+        })
+      }
     },
     Cancel(index, row) {
 
