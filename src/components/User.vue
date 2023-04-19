@@ -34,7 +34,7 @@
       :data="parkingSpots"
       border
       stripe
-      style="width: 1120px">
+      style="width: 1200px">
       <el-table-column
         prop="id"
         label="Id"
@@ -90,7 +90,13 @@
           size="mini"
           type="danger"
           @click="handleBook(scope.$index, scope.row)">Book</el-button>
+        <span v-if="scope.$index===min_index">Recommend </span>
       </template>
+      </el-table-column>
+      <el-table-column
+        prop="likes"
+        label="Likes"
+        width="80">
       </el-table-column>
 
     </el-table>
@@ -114,6 +120,7 @@ export default {
       service: '',
       id: '',
       owner: '',
+      min_index: 0,
       location: '',
       price: 0,
       start_time: '',
@@ -322,6 +329,26 @@ export default {
       this.lng = item.position.lng;
       console.log(this.lat);
       console.log(this.lng);
+
+      console.log(this.parkingSpots);
+      let index = 0;
+      let min_distance;
+      for (let i = 0; i < this.parkingSpots.length; i ++) {
+        let lat = this.parkingSpots[i].lat;
+        let lng = this.parkingSpots[i].lng;
+        let dist = (this.lat - lat) * (this.lat - lat) + (this.lng - lng) * (this.lng - lng);
+        console.log(dist);
+
+        if (!min_distance) {
+          min_distance = dist;
+        }
+        if (min_distance > dist) {
+          min_distance = dist;
+          index = i;
+        }
+      }
+      console.log(index);
+      this.min_index = index;
     },
     querySearch(queryString, cb) {
       var request = {

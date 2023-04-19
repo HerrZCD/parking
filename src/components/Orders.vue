@@ -60,6 +60,7 @@
           type="danger"
           v-if="scope.row.state==='unconfirm'"
           @click="Cancel(scope.$index, scope.row)">Cancel</el-button>
+        <el-button size="mini" @click="Like(scope.$index, scope.row)" class="login-btn">Like</el-button>
       </template>
       </el-table-column>
 
@@ -89,6 +90,19 @@ export default {
     this.GetOrders();;
   },
   methods: {
+    Like(index, row) {
+      const params = {
+        id: row.spot_id
+      }
+      fetch("http://127.0.0.1:5000/like", {
+          method: 'POST', // or 'PUT'
+          body: JSON.stringify(params),
+          headers: new Headers({
+            'Content-Type': 'application/json;charset=utf-8',
+            'user-agent': 'Mozillia/4.0 MDN Example'
+          })
+        })
+    },
     Confirm(index, row) {
       if (Date.now() > Number(row.user_time_start)) {
         let state = '';

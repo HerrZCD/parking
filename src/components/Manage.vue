@@ -49,7 +49,7 @@
       :data="parkingSpots"
       border
       stripe
-      style="width: 1120px">
+      style="width: 1200px">
       <el-table-column
         prop="id"
         label="Id"
@@ -109,6 +109,11 @@
           type="danger"
           @click="handleDelete(scope.$index, scope.row)">Delete</el-button>
       </template>
+      </el-table-column>
+      <el-table-column
+        prop="likes"
+        label="Likes"
+        width="80">
       </el-table-column>
 
     </el-table>
