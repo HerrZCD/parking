@@ -15,13 +15,12 @@
       <span class="tag">Start time:</span>
       <el-date-picker
         v-model="start_time"
-        type="datetime"
-        placeholder="Select start time">
+        type="datetimerange"
+        range-separator="至"
+        start-placeholder="开始日期"
+        :picker-options="pickerOptions"
+        end-placeholder="结束日期">
       </el-date-picker>
-    </div>
-    <div class="input-wrapper">
-      <span class="tag">Duration:</span>
-      <el-input v-model="duration" placeholder="Please input time duration" style="width: 220px" type="number"></el-input>
     </div>
     <div class="input-wrapper">
       <span class="tag">Price:</span>
@@ -116,9 +115,15 @@ export default {
       id: '',
       owner: '',
       location: '',
-      price: '',
+      price: 0,
       start_time: '',
-      duration: '',
+      user_time_end: 0,
+      user_time_start: 0,
+      pickerOptions: {
+        disabledDate: (date) => {
+          return date.getTime() < this.user_time_start || date.getTime() > this.user_time_end;
+        }
+      }
     }
   },
   computed: {
@@ -129,10 +134,17 @@ export default {
       return this.$store.state.currentRole;
     },
     totalPrice() {
+      if (isNaN(this.duration * this.price)) return 0;
       return this.duration * this.price;
     },
     user() {
       return this.$store.state.currentUser;
+    },
+    duration() {
+      if (Array.isArray(this.start_time) && this.start_time.length === 2) {
+        console.log(this.start_time)
+        return (this.start_time[1].getTime() - this.start_time[0].getTime()) / 1000 / 3600;
+      }
     }
   },
   mounted() {
@@ -183,6 +195,11 @@ export default {
       this.owner = row.owner;
       this.location = row.location;
       this.price = row.price;
+      this.user_time_start = Number(row.user_time_start);
+      this.user_time_end = Number(row.user_time_end);
+      console.log(this.user_time_start)
+      console.log("===================")
+      console.log(this.user_time_end)
 
 
       document.getElementById('book-box').style.display = "block";
