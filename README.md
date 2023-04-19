@@ -1,27 +1,17 @@
-# parking
+### 介绍
 
-> A Vue.js project
+这个前端项目主要用了Vue.js, Vuex, Router, Google Map Javascript API, ElementUI实现了简单的停车位注册/浏览/管理系统。
 
-## Build Setup
+### 安装
 
-``` bash
-# install dependencies
-npm install
+运行此前端项目首先电脑要安装npm https://www.liaoxuefeng.com/wiki/1022910821149312/1023025597810528
 
-# serve with hot reload at localhost:8080
-npm run dev
+1. git clone https://github.com/HerrZCD/parking.git
 
-# build for production with minification
-npm run build
+2. cd parking
 
-# build for production and view the bundle analyzer report
-npm run build --report
+3. npm install
 
-# run unit tests
-npm run unit
+4. npm run dev
 
-# run all tests
-npm test
-```
-
-For a detailed explanation on how things work, check out the [guide](http://vuejs-templates.github.io/webpack/) and [docs for vue-loader](http://vuejs.github.io/vue-loader).
+注意代码里有http://127.0.0.1:5000 这是我写死的我本地开发的时候的后端地址，你跑起来后端项目后，把项目里这个地址换成你后端的地址，vscode全部替换即可。
