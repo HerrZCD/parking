@@ -187,6 +187,13 @@ export default {
         })
     },
     Book() {
+    if (this.totalPrice > this.$store.state.balance) {
+      this.$message({
+        type: 'info',
+        message: 'Your account balance is insufficient'
+      });
+      return;
+    }
     console.log(this.start_order_time);
       const params = {
         spot_id : this.id,
@@ -249,10 +256,6 @@ export default {
       this.price = row.price;
       this.user_time_start = Number(row.user_time_start);
       this.user_time_end = Number(row.user_time_end);
-      console.log(this.user_time_start)
-      console.log("===================")
-      console.log(this.user_time_end)
-
 
       document.getElementById('book-box').style.display = "block";
     },
