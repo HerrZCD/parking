@@ -5,13 +5,11 @@
       <el-link type="primary" @click="GotoMyOrder()" v-if="(role==='User' || role === 'Owner') && $route.path !== '/orders' && $route.path !== '/login' && $route.path !== '/register'">My Orders</el-link>
       <span v-if="(role==='User' || role === 'Owner')" class="balance">{{balance}}</span><el-link v-if="(role==='User' || role === 'Owner')" @click="showAddBalanceWindow()" type="primary">balance:</el-link>
     </div>
-    <div id="add-b">
-      <div class="input-wrapper">
-        <el-input v-model="addValue" placeholder="Please input user name" style="width: 100%" @keyup.enter="login"></el-input>
-      </div>
-      <div class="buttons">
-        <el-button type="mini" @click="Add()" class="login-btn">Add</el-button>
-        <el-button type="mini"@click="cancel()">Cancel</el-button>
+    <div id="add-b" v-on:blur="Hide">
+      <div class="input-wrapper" id="valueAdd">
+        <el-input v-model="addValue" @blur="Hide" style="width: 100%" @keyup.enter="login" id="my-input">
+        </el-input>
+        <div id="button" @click="Add()"><i class="el-icon-plus"></i></div>
       </div>
     </div>
     <router-view/>
@@ -38,6 +36,9 @@ export default {
     },
   },
   methods: {
+    Hide(e) {
+      document.getElementById('add-b').style.display = "none";
+    },
     BACK() {
       this.$router.back() .back();
     },
@@ -93,6 +94,7 @@ export default {
     },
     showAddBalanceWindow() {
       document.getElementById('add-b').style.display = "block";
+      document.getElementById('my-input').focus();
     },
     cancel() {
       document.getElementById('add-b').style.display = "none";
@@ -119,9 +121,25 @@ export default {
   padding-right: 10px;
 }
 
+#valueAdd {
+  position: relative;
+}
+
 .back {
   position: absolute;
   left: 10px;
+}
+
+#button {
+  width: 40px;
+  height: 40px;
+  position: absolute;
+  right: 0;
+  top: 0;
+  background-color: #409eff;
+  line-height: 40px;
+  color: white;
+  cursor: pointer;
 }
 
 .balance {
@@ -134,7 +152,8 @@ export default {
 #add-b {
   display: none;
   width: 200px;
-  height: 70px;
+  height: 40px;
+  overflow: hidden;
   border-radius: 4px;
   border: 1px #ebebeb solid;
   box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
