@@ -180,13 +180,14 @@ export default {
         })
         .then(res => res.json())
         .then(data => {
-          this.$store.dispatch('roleActions', data.role);
+          this.$store.dispatch('balanceActions', data.balance);
         })
         .catch(function (e) {
           console.log('oops! error:', e.message)
         })
     },
     Book() {
+    console.log(this.start_order_time);
       const params = {
         spot_id : this.id,
         location: this.location,
