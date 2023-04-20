@@ -1,7 +1,8 @@
 <template>
   <div id="app">
     <div id="my-info-bar">
-      <el-link type="primary" @click="GotoMyOrder()" v-if="(role==='User' || role === 'Owner') && $route.path !== '/orders'">My Orders</el-link>
+      <el-link type="primary" @click="BACK()" v-if="$route.path !== '/login'" class="back"><i class="el-icon-back"></i>BACK</el-link>
+      <el-link type="primary" @click="GotoMyOrder()" v-if="(role==='User' || role === 'Owner') && $route.path !== '/orders' && $route.path !== '/login' && $route.path !== '/register'">My Orders</el-link>
       <span v-if="(role==='User' || role === 'Owner')" class="balance">{{balance}}</span><el-link v-if="(role==='User' || role === 'Owner')" @click="showAddBalanceWindow()" type="primary">balance:</el-link>
     </div>
     <div id="add-b">
@@ -37,6 +38,9 @@ export default {
     },
   },
   methods: {
+    BACK() {
+      this.$router.back() .back();
+    },
     Add() {
       const params = {
         name: this.user,
@@ -107,11 +111,17 @@ export default {
 }
 
 #my-info-bar {
+  position: relative;
   width: 100%;
   height: 30px;
   display: flex;
   flex-direction: row-reverse;
   padding-right: 10px;
+}
+
+.back {
+  position: absolute;
+  left: 10px;
 }
 
 .balance {
