@@ -103,10 +103,6 @@ export default {
               // do nothing
             }
           } else {
-            this.$message({
-              type: 'info',
-              message: 'fail to login'
-            });
           }
         })
         .catch(function (e) {
