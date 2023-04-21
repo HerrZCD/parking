@@ -5,9 +5,9 @@
       <el-link type="primary" @click="GotoMyOrder()" v-if="(role==='User' || role === 'Owner') && $route.path !== '/orders' && $route.path !== '/login' && $route.path !== '/register'">My Orders</el-link>
       <span v-if="(role==='User' || role === 'Owner')" class="balance">{{balance}}</span><el-link v-if="(role==='User' || role === 'Owner')" @click="showAddBalanceWindow()" type="primary">balance:</el-link>
     </div>
-    <div id="add-b" v-on:blur="Hide">
+    <div id="add-b">
       <div class="input-wrapper" id="valueAdd">
-        <el-input v-model="addValue" @blur="Hide" style="width: 100%" @keyup.enter="login" id="my-input">
+        <el-input v-model="addValue" style="width: 100%" @keyup.enter="login" id="my-input">
         </el-input>
         <div id="button" @click="Add()"><i class="el-icon-plus"></i></div>
       </div>
@@ -68,6 +68,7 @@ export default {
         .catch(function (e) {
           console.log('oops! error:', e.message)
         })
+        Hide();
     },
     getbalance() {
        const params = {
